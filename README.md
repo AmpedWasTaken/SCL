@@ -30,10 +30,9 @@ Supports literal strings, numbers, booleans, null, lists, objects, named and nes
 import "github.com/AmpedWasTaken/SCL"
 
 schema := scl.Schema{
-    "theme.midnight.animation.fps": {
-        Kind: scl.Integer, Default: 30,
-    },
-    // Add all other accepted fields; a non-nil schema is strict.
+    "theme.midnight.animation.fps": {Kind: scl.Integer, Default: 30},
+    "theme.midnight.animation.enabled": {Kind: scl.Boolean},
+    "theme.midnight.colors": {Kind: scl.Array},
 }
 cfg, err := scl.Load("server.conf", schema)
 if err != nil {

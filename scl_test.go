@@ -25,7 +25,7 @@ func TestPresetsAndEdits(t *testing.T){
 
 func TestRejectInvalid(t *testing.T){
 	for _,src:=range []string{
-		"x = file(\"secret\")\n","x = var.name\n","x = 1+2\n","x = \"\${1}\"\n",
+		"x = file(\"secret\")\n","x = var.name\n","x = 1+2\n","x = \"${1}\"\n",
 		"x=1\nx=2\n","a {}\na {}\n","preset a { use = \"b\" }\npreset b { use = \"a\" }\n",
 		"theme a { use = \"missing\" }\n",
 	}{

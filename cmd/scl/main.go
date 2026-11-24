@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"os"
 	"strings"
 
@@ -17,7 +18,7 @@ func run(args []string)error{
 		f,err:=os.Open(path);if err!=nil{return err};defer f.Close()
 		info,err:=f.Stat();if err!=nil{return err}
 		if !info.Mode().IsRegular()||info.Size()>scl.MaxBytes{return fmt.Errorf("invalid input file")}
-		raw,err:=os.ReadFile(path);if err!=nil{return err}
+		raw,err:=io.ReadAll(io.LimitReader(f,scl.MaxBytes+1));if err!=nil{return err}
 		out,err:=scl.FromJSON(raw);if err!=nil{return err}
 		_,err=os.Stdout.Write(out);return err
 	}

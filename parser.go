@@ -47,11 +47,16 @@ func literal(e hclsyntax.Expression, depth int) bool {
 		for _, v := range x.Exprs { if !literal(v, depth+1) { return false } }
 		return true
 	case *hclsyntax.ObjectConsExpr:
+		seen := map[string]bool{}
 		for _, item := range x.Items {
-			if len(item.KeyExpr.Variables()) != 0 || !literal(item.ValueExpr, depth+1) { return false }
-			// Object keys are HCL's literal identifiers or quoted strings.
-			k, diags := item.KeyExpr.Value(nil)
+			key, ok := item.KeyExpr.(*hclsyntax.ObjectConsKeyExpr)
+			if !ok || key.ForceNonLiteral || !literal(item.ValueExpr, depth+1) { return false }
+			if hcl.ExprAsKeyword(key.Wrapped) == "" && !literal(key.Wrapped, depth+1) { return false }
+			k, diags := key.Value(nil)
 			if diags.HasErrors() || !k.IsKnown() || k.IsNull() || k.Type() != cty.String { return false }
+			name := k.AsString()
+			if seen[name] { return false }
+			seen[name] = true
 		}
 		return true
 	default:
