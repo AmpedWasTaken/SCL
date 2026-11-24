@@ -5,12 +5,13 @@
 - Named presets with cycle checking, immutable copies for readers.
 - Source-preserving attribute edits, formatting, guarded file replacement.
 - Explicit reload with validation and JSON conversion; basic CLI.
+- Command-driven multi-file manager with atomic in-memory publication and restart-only field checks.
 
 ## Next
 - Commit the dependency lockfile after resolving the module graph.
 - Full schema diagnostics with ranges and generated documentation/default templates.
 - Typed collection element constraints, wildcard schemas, cross-field validation.
-- File watching, per-field reload policy enforcement and transactional multi-file changes.
+- File watching, host-specific runtime effects and transactional multi-file disk changes.
 - Cross-process locking, durable backups, rollback and version history.
 - Legacy INI migration with application-specific mapping, diff and redaction.
 - VS Code grammar, completion and schema integration; Config Studio.

@@ -48,6 +48,10 @@ return cfg.Save()
 
 Use a nil schema to accept arbitrary literal settings. Get returns a value and presence flag; convenience accessors return zero values on missing or incompatible values. Snapshot returns detached data. Set validates the full candidate and edits existing block bodies without regenerating the entire source. Reload keeps the last valid snapshot and refuses to discard unsaved edits.
 
+## Command-driven reload
+
+Use `OpenManager` with explicitly registered files, then call `CheckReload()` or `Reload()` from the host's existing reload command. All registered files are validated before a new snapshot is published; restart-only fields are rejected. See [reload integration](docs/RELOAD.md).
+
 ## CLI
 
 ```sh
