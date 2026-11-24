@@ -17,6 +17,15 @@ const (
 	Array Kind = "array"
 	Object Kind = "object"
 	Duration Kind = "duration"
+	IP Kind = "ip"
+	CIDR Kind = "cidr"
+	Port Kind = "port"
+	Hostname Kind = "hostname"
+	URL Kind = "url"
+	Email Kind = "email"
+	Color Kind = "color"
+	Percentage Kind = "percentage"
+	Bytes Kind = "bytes"
 )
 
 // Field describes a supported setting. Nil Default means no default.
@@ -29,6 +38,10 @@ type Field struct {
 	Min,Max *int64
 	Enum []string
 	HotReload bool
+	Element Kind // optional homogeneous array element type
+	Pattern string // RE2 pattern for string values
+	MinLength,MaxLength int // zero means unspecified; Unicode code points or collection items
+	Sensitive bool // metadata for documentation and host-side display policies
 }
 
 type Schema map[string]Field
@@ -64,6 +77,7 @@ func checkField(path string,f Field,v any)error {
 	case Object: _,ok=v.(object)
 	case Duration:
 		if st,is:=v.(string);is{_,e:=time.ParseDuration(st);ok=e==nil}
+	case IP,CIDR,Port,Hostname,URL,Email,Color,Percentage,Bytes: ok=checkExtendedKind(f.Kind,v)
 	default:return fmt.Errorf("%s: invalid schema kind %q",path,f.Kind)
 	}
 	if !ok{return fmt.Errorf("%s: expected %s, got %T",path,f.Kind,v)}
@@ -72,7 +86,7 @@ func checkField(path string,f Field,v any)error {
 		for _,choice:=range f.Enum {if is && str==choice{match=true}}
 		if !match{return fmt.Errorf("%s: expected one of %s",path,strings.Join(f.Enum,", "))}
 	}
-	return nil
+	return checkConstraints(path,f,v)
 }
 
 // apply validates a strict schema and returns a detached effective configuration.
@@ -82,6 +96,7 @@ func (s Schema) apply(raw object)(object,error){
 	if s==nil{return out,nil}
 	for _,p:=range s.Paths(){
 		f:=s[p]
+		if err:=validateFieldDefinition(p,f);err!=nil{return nil,err}
 		v,ok:=lookup(out,p)
 		if !ok && f.Default!=nil{
 			var err error

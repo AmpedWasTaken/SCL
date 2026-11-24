@@ -21,6 +21,7 @@ type ReloadReport struct {
 	Generation uint64
 	Files      int
 	Changed    []string
+	Changes    []Change
 }
 
 // Manager owns a single effective snapshot spanning all registered files.
@@ -32,6 +33,7 @@ type Manager struct {
 	specs    []FileSpec
 	values   map[string]object
 	version  uint64
+	subscribers map[chan uint64]struct{}
 }
 
 const MaxManagedFiles = 32
@@ -130,11 +132,13 @@ func (m *Manager) prepare(publish bool) (ReloadReport, error) {
 			}
 		}
 		report.Changed = append(report.Changed, spec.Name)
+		report.Changes = append(report.Changes, diffObjects(spec.Name, nil, old, fresh)... )
 	}
 	if publish && len(report.Changed) != 0 {
 		m.values = next
 		m.version++
 		report.Generation = m.version
+		m.notifyLocked()
 	}
 	return report, nil
 }

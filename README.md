@@ -52,6 +52,10 @@ Use a nil schema to accept arbitrary literal settings. Get returns a value and p
 
 Use `OpenManager` with explicitly registered files, then call `CheckReload()` or `Reload()` from the host's existing reload command. All registered files are validated before a new snapshot is published; restart-only fields are rejected. See [reload integration](docs/RELOAD.md).
 
+## Advanced schemas
+
+Built-in kinds now include IP, CIDR, Port, Hostname, URL (HTTP/HTTPS), Email, Color (RGB hex), Percentage and Bytes. Array fields can specify an Element kind; strings support RE2 Pattern constraints; strings and collections support MinLength and MaxLength. Sensitive is metadata only, not automatic encryption or redaction. Reload reports expose changed paths and change kinds, never the values. Subscribe returns coalesced committed generation notifications.
+
 ## CLI
 
 ```sh

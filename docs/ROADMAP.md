@@ -7,10 +7,13 @@
 - Explicit reload with validation and JSON conversion; basic CLI.
 - Command-driven multi-file manager with atomic in-memory publication and restart-only field checks.
 
+- Extended scalar kinds, homogeneous arrays, string/collection length and pattern constraints.
+- Value-free reload change reports and coalesced generation events.
+
 ## Next
 - Commit the dependency lockfile after resolving the module graph.
 - Full schema diagnostics with ranges and generated documentation/default templates.
-- Typed collection element constraints, wildcard schemas, cross-field validation.
+- Wildcard schemas, cross-field validation and richer schema diagnostics.
 - File watching, host-specific runtime effects and transactional multi-file disk changes.
 - Cross-process locking, durable backups, rollback and version history.
 - Legacy INI migration with application-specific mapping, diff and redaction.
