@@ -60,6 +60,10 @@ Built-in kinds now include IP, CIDR, Port, Hostname, URL (HTTP/HTTPS), Email, Co
 
 Use an `imports` array and named `profile` blocks with `LoadProject` or register `FileSpec.Project` for reloads. See [composed project documentation](docs/PROJECTS.md).
 
+## History and rollback
+
+Use `Backup`, `SaveWithHistory`, `History`, `DiffRevision` and `Restore` for opt-in single-file snapshots with integrity checks and validation. See [history](docs/HISTORY.md) for privacy and recovery constraints.
+
 ## CLI
 
 ```sh

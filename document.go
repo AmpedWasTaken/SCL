@@ -121,6 +121,10 @@ func (d *Document) Reload()error{
 // serialize writers across processes. Rename atomicity depends on the OS.
 func (d *Document) Save()error{
 	d.mu.Lock();defer d.mu.Unlock()
+	return d.saveLocked()
+}
+
+func (d *Document) saveLocked()error{
 	if d.path==""{return fmt.Errorf("document has no file")}
 	current,err:=readRegular(d.path);if err!=nil{return err}
 	if !bytes.Equal(current,d.original){return fmt.Errorf("configuration changed on disk; reload first")}

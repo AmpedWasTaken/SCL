@@ -12,12 +12,14 @@
 
 - Root-scoped local imports, disjoint merges, named profiles and reload integration.
 
+- Opt-in single-file version backups, effective diffs and validated rollback.
+
 ## Next
 - Commit the dependency lockfile after resolving the module graph.
 - Full schema diagnostics with ranges and generated documentation/default templates.
 - Wildcard schemas, cross-field validation and richer schema diagnostics.
 - File watching, host-specific runtime effects and transactional multi-file disk changes.
-- Cross-process locking, durable backups, rollback and version history.
+- Cross-process locking, multi-file history, retention, signed audit events and durable crash recovery.
 - Legacy INI migration with application-specific mapping, diff and redaction.
 - VS Code grammar, completion and schema integration; Config Studio.
 - Fuzzing, benchmarks, dependency and security review.
