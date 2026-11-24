@@ -56,6 +56,10 @@ Use `OpenManager` with explicitly registered files, then call `CheckReload()` or
 
 Built-in kinds now include IP, CIDR, Port, Hostname, URL (HTTP/HTTPS), Email, Color (RGB hex), Percentage and Bytes. Array fields can specify an Element kind; strings support RE2 Pattern constraints; strings and collections support MinLength and MaxLength. Sensitive is metadata only, not automatic encryption or redaction. Reload reports expose changed paths and change kinds, never the values. Subscribe returns coalesced committed generation notifications.
 
+## Modular projects
+
+Use an `imports` array and named `profile` blocks with `LoadProject` or register `FileSpec.Project` for reloads. See [composed project documentation](docs/PROJECTS.md).
+
 ## CLI
 
 ```sh

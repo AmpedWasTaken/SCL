@@ -104,12 +104,20 @@ func readBody(b *hclsyntax.Body, depth int) (object, error) {
 	return out, nil
 }
 
-func parseSource(src []byte, filename string) (object, error) {
+func parseRawSource(src []byte, filename string) (object, error) {
 	if len(src) > MaxBytes { return nil, fmt.Errorf("configuration exceeds %d bytes", MaxBytes) }
 	file, diags := hclsyntax.ParseConfig(src, filename, hcl.Pos{Line:1, Column:1})
 	if diags.HasErrors() { return nil, diags }
 	raw, err := readBody(file.Body.(*hclsyntax.Body), 0)
 	if err != nil { return nil, err }
+	return raw, nil
+}
+
+func parseSource(src []byte, filename string) (object,error) {
+	raw,err:=parseRawSource(src,filename)
+	if err!=nil{return nil,err}
+	if _,ok:=raw["imports"];ok{return nil,fmt.Errorf("imports require LoadProject with an explicit root")}
+	if _,ok:=raw["profile"];ok{return nil,fmt.Errorf("profiles require LoadProject with explicit options")}
 	return resolvePresets(raw)
 }
 

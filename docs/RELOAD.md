@@ -58,3 +58,5 @@ adding this library alone does not change Sentinel's running command.
 ## Change reports and events
 
 `ReloadReport.Changes` includes file names, segmented paths and added/removed/modified kinds. It never includes old/new values. Arrays are compared as a whole. `manager.Subscribe()` returns a generation channel and cancel function. Notifications are coalesced for slow readers; read a fresh Snapshot after notification. Preflight, failed reloads and no-op reloads never emit. Runtime changes are the application's responsibility; notification is not a transaction or rollback mechanism.
+
+For modular configuration set `FileSpec.Project` to `ProjectOptions{Root: ..., Profile: ...}`. Reload re-reads and validates the entire import graph before publication. See [projects](PROJECTS.md).

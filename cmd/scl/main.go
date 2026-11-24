@@ -22,6 +22,14 @@ func run(args []string)error{
 		out,err:=scl.FromJSON(raw);if err!=nil{return err}
 		_,err=os.Stdout.Write(out);return err
 	}
+	if command=="validate-project"{
+		if len(args)<3||len(args)>4{return fmt.Errorf("usage: scl validate-project FILE ROOT [PROFILE]")}
+		opts:=scl.ProjectOptions{Root:args[2]}
+		if len(args)==4{opts.Profile=args[3]}
+		if _,err:=scl.LoadProject(path,nil,opts);err!=nil{return err}
+		fmt.Println("Valid SCL project (imports and selected profile)")
+		return nil
+	}
 	d,err:=scl.Load(path,nil);if err!=nil{return err}
 	switch command{
 	case "validate":

@@ -10,6 +10,8 @@
 - Extended scalar kinds, homogeneous arrays, string/collection length and pattern constraints.
 - Value-free reload change reports and coalesced generation events.
 
+- Root-scoped local imports, disjoint merges, named profiles and reload integration.
+
 ## Next
 - Commit the dependency lockfile after resolving the module graph.
 - Full schema diagnostics with ranges and generated documentation/default templates.
