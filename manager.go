@@ -14,6 +14,7 @@ type FileSpec struct {
 	Name   string
 	Path   string
 	Schema Schema
+	Project ProjectOptions // nonempty Root enables composed configuration
 }
 
 // ReloadReport describes a successful check or reload without exposing values.
@@ -21,6 +22,7 @@ type ReloadReport struct {
 	Generation uint64
 	Files      int
 	Changed    []string
+	Changes    []Change
 }
 
 // Manager owns a single effective snapshot spanning all registered files.
@@ -32,6 +34,7 @@ type Manager struct {
 	specs    []FileSpec
 	values   map[string]object
 	version  uint64
+	subscribers map[chan uint64]struct{}
 }
 
 const MaxManagedFiles = 32
@@ -59,7 +62,12 @@ func OpenManager(specs []FileSpec) (*Manager, error) {
 			return nil, fmt.Errorf("%s: %w", spec.Name, err)
 		}
 		names[spec.Name], paths[path] = true, true
-		m.specs = append(m.specs, FileSpec{Name: spec.Name, Path: path, Schema: schema})
+		project:=spec.Project
+		if project.Root!="" {
+			project.Root,err=filepath.Abs(project.Root)
+			if err!=nil{return nil,err}
+		} else if project.Profile!="" {return nil,fmt.Errorf("%s: profile requires project root",spec.Name)}
+		m.specs = append(m.specs, FileSpec{Name: spec.Name, Path: path, Schema: schema, Project:project})
 	}
 	sort.Slice(m.specs, func(i, j int) bool { return m.specs[i].Name < m.specs[j].Name })
 	values, err := m.readAll()
@@ -73,6 +81,12 @@ func OpenManager(specs []FileSpec) (*Manager, error) {
 func (m *Manager) readAll() (map[string]object, error) {
 	next := make(map[string]object, len(m.specs))
 	for _, spec := range m.specs {
+		if spec.Project.Root!="" {
+			v,err:=LoadProject(spec.Path,spec.Schema,spec.Project)
+			if err!=nil{return nil,fmt.Errorf("%s: %w",spec.Name,err)}
+			next[spec.Name]=v
+			continue
+		}
 		d, err := Load(spec.Path, spec.Schema)
 		if err != nil {
 			return nil, fmt.Errorf("%s: %w", spec.Name, err)
@@ -130,11 +144,13 @@ func (m *Manager) prepare(publish bool) (ReloadReport, error) {
 			}
 		}
 		report.Changed = append(report.Changed, spec.Name)
+		report.Changes = append(report.Changes, diffObjects(spec.Name, nil, old, fresh)... )
 	}
 	if publish && len(report.Changed) != 0 {
 		m.values = next
 		m.version++
 		report.Generation = m.version
+		m.notifyLocked()
 	}
 	return report, nil
 }

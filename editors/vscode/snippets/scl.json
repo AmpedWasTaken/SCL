@@ -1,0 +1,35 @@
+{
+  "Named block": {
+    "prefix": "block",
+    "body": [
+      "${1:theme} ${2:default} {",
+      "    ${3:key} = ${4:value}",
+      "}"
+    ],
+    "description": "Named configuration block"
+  },
+  "Preset": {
+    "prefix": "preset",
+    "body": [
+      "preset ${1:name} {",
+      "    ${2:key} = ${3:value}",
+      "}"
+    ]
+  },
+  "Profile": {
+    "prefix": "profile",
+    "body": [
+      "profile ${1:production} {",
+      "    ${2:setting} = ${3:value}",
+      "}"
+    ]
+  },
+  "Imports": {
+    "prefix": "imports",
+    "body": [
+      "imports = [",
+      "    \"${1:appearance/theme.scl}\",",
+      "]"
+    ]
+  }
+}
