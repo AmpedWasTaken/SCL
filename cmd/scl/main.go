@@ -13,6 +13,18 @@ import (
 func run(args []string)error{
 	if len(args)<2{return fmt.Errorf("usage: scl validate FILE | fmt FILE [--write] | set FILE PATH JSON [--history DIR] | migrate-json FILE | backup/history FILE DIR | restore FILE DIR ID | diff FILE OTHER")}
 	command,path:=args[0],args[1]
+	if command=="generate"||command=="docs"{
+		if len(args)!=2{return fmt.Errorf("usage: scl %s SCHEMA.json",command)}
+		s,err:=scl.ReadSchema(path);if err!=nil{return err}
+		var out []byte
+		if command=="generate"{out,err=s.Generate()}else{out,err=s.Describe()}
+		if err!=nil{return err};_,err=os.Stdout.Write(out);return err
+	}
+	if command=="validate-schema"{
+		if len(args)!=3{return fmt.Errorf("usage: scl validate-schema FILE SCHEMA.json")}
+		s,err:=scl.ReadSchema(args[2]);if err!=nil{return err}
+		if _,err=scl.Load(path,s);err!=nil{return err};fmt.Println("Valid SCL (schema validated)");return nil
+	}
 	if command=="migrate-json"{
 		if len(args)!=2{return fmt.Errorf("usage: scl migrate-json FILE")}
 		f,err:=os.Open(path);if err!=nil{return err};defer f.Close()

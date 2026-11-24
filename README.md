@@ -64,6 +64,10 @@ Use an `imports` array and named `profile` blocks with `LoadProject` or register
 
 Use `Backup`, `SaveWithHistory`, `History`, `DiffRevision` and `Restore` for opt-in single-file snapshots with integrity checks and validation. See [history](docs/HISTORY.md) for privacy and recovery constraints.
 
+## Schema tooling and secrets
+
+Use `ReadSchema`, `Generate`, `Describe`, `Document.Decode` and `Document.ValidateWith` to build host tooling. Secret fields accept only `env:NAME` references; an explicit application-owned `EnvResolver` allowlist is required to access values. Parsing never resolves secrets. The VS Code syntax and snippet extension lives in `editors/vscode`.
+
 ## CLI
 
 ```sh
@@ -73,6 +77,9 @@ scl fmt examples/appearance.conf
 scl fmt examples/appearance.conf --write
 scl set examples/appearance.conf theme.midnight.animation.fps 60
 scl migrate-json old.json > new.conf
+scl generate examples/schema.json
+scl docs examples/schema.json
+scl validate-schema server.scl examples/schema.json
 ```
 
 The generic CLI checks syntax and presets, not application-specific schema rules. JSON migration is non-destructive unless the operator redirects output over an existing file; write to a new path and validate before use.

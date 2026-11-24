@@ -57,6 +57,9 @@ func checkExtendedKind(kind Kind, v any) bool {
 		return err == nil && a.Name == "" && a.Address == s
 	case Color:
 		return rgbColor.MatchString(s)
+	case Secret:
+		_,err:=parseSecretRef(s)
+		return err==nil
 	default:
 		return false
 	}
@@ -64,7 +67,7 @@ func checkExtendedKind(kind Kind, v any) bool {
 
 func knownKind(k Kind) bool {
 	switch k {
-	case String,Integer,Number,Boolean,Array,Object,Duration,IP,CIDR,Port,Hostname,URL,Email,Color,Percentage,Bytes:
+	case String,Integer,Number,Boolean,Array,Object,Duration,IP,CIDR,Port,Hostname,URL,Email,Color,Percentage,Bytes,Secret:
 		return true
 	}
 	return false
@@ -79,6 +82,7 @@ func validateFieldDefinition(path string, f Field) error {
 	if f.MinLength < 0 || f.MaxLength < 0 || (f.MaxLength > 0 && f.MinLength > f.MaxLength) { return fmt.Errorf("%s: invalid length constraints",path) }
 	if (f.Min != nil || f.Max != nil) && f.Kind != Integer { return fmt.Errorf("%s: integer bounds require integer kind",path) }
 	if f.Min != nil && f.Max != nil && *f.Min > *f.Max { return fmt.Errorf("%s: invalid integer bounds",path) }
+	if f.Kind==Secret && (f.Default!=nil || len(f.Enum)>0) { return fmt.Errorf("%s: secrets cannot have defaults or enum constraints",path) }
 	if f.Pattern != "" {
 		if f.Kind != String { return fmt.Errorf("%s: pattern requires string kind",path) }
 		if _,err:=regexp.Compile(f.Pattern);err!=nil { return fmt.Errorf("%s: invalid schema pattern",path) }

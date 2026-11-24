@@ -1,0 +1,41 @@
+{
+  "name": "scl-language",
+  "displayName": "SCL Language Support",
+  "description": "Syntax highlighting and configuration snippets for SCL.",
+  "version": "0.1.0",
+  "publisher": "ampedwastaken",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "scl",
+        "aliases": [
+          "SCL",
+          "Sentinel Configuration Language"
+        ],
+        "extensions": [
+          ".scl"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "scl",
+        "scopeName": "source.scl",
+        "path": "./syntaxes/scl.tmLanguage.json"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "scl",
+        "path": "./snippets/scl.json"
+      }
+    ]
+  }
+}

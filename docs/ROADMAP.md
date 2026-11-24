@@ -14,15 +14,18 @@
 
 - Opt-in single-file version backups, effective diffs and validated rollback.
 
+- Explicit allowlisted environment secret references, schema starter generation and metadata export, typed decode and custom validation.
+- VS Code syntax highlighting and snippets, parser fuzz target and benchmark.
+
 ## Next
 - Commit the dependency lockfile after resolving the module graph.
-- Full schema diagnostics with ranges and generated documentation/default templates.
-- Wildcard schemas, cross-field validation and richer schema diagnostics.
+- Full schema diagnostics with ranges and richer generated documentation.
+- Wildcard schemas and transactional cross-field validation in Manager.
 - File watching, host-specific runtime effects and transactional multi-file disk changes.
 - Cross-process locking, multi-file history, retention, signed audit events and durable crash recovery.
 - Legacy INI migration with application-specific mapping, diff and redaction.
-- VS Code grammar, completion and schema integration; Config Studio.
-- Fuzzing, benchmarks, dependency and security review.
+- VS Code language server, schema-aware completion and Config Studio.
+- Long-duration fuzzing, performance baselines, dependency and security review.
 
 ## Boundaries
 Configuration is declarative. Do not evaluate untrusted code, fetch remote files or

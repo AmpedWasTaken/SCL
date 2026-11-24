@@ -1,0 +1,29 @@
+{
+  "server.name": {
+    "Kind": "string",
+    "Default": "Example",
+    "Description": "Display name"
+  },
+  "terminal.fps": {
+    "Kind": "integer",
+    "Default": 30,
+    "Min": 1,
+    "Max": 60,
+    "HotReload": true
+  },
+  "terminal.colors": {
+    "Kind": "array",
+    "Element": "color",
+    "Default": [
+      "#44DBD6",
+      "#B769FF"
+    ],
+    "MinLength": 2,
+    "HotReload": true
+  },
+  "service.token": {
+    "Kind": "secret",
+    "Required": true,
+    "Sensitive": true
+  }
+}

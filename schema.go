@@ -26,6 +26,7 @@ const (
 	Color Kind = "color"
 	Percentage Kind = "percentage"
 	Bytes Kind = "bytes"
+	Secret Kind = "secret"
 )
 
 // Field describes a supported setting. Nil Default means no default.
@@ -77,14 +78,14 @@ func checkField(path string,f Field,v any)error {
 	case Object: _,ok=v.(object)
 	case Duration:
 		if st,is:=v.(string);is{_,e:=time.ParseDuration(st);ok=e==nil}
-	case IP,CIDR,Port,Hostname,URL,Email,Color,Percentage,Bytes: ok=checkExtendedKind(f.Kind,v)
+	case IP,CIDR,Port,Hostname,URL,Email,Color,Percentage,Bytes,Secret: ok=checkExtendedKind(f.Kind,v)
 	default:return fmt.Errorf("%s: invalid schema kind %q",path,f.Kind)
 	}
 	if !ok{return fmt.Errorf("%s: expected %s, got %T",path,f.Kind,v)}
 	if len(f.Enum)>0{
 		str,is:=v.(string);match:=false
 		for _,choice:=range f.Enum {if is && str==choice{match=true}}
-		if !match{return fmt.Errorf("%s: expected one of %s",path,strings.Join(f.Enum,", "))}
+		if !match{return fmt.Errorf("%s: value is not an allowed enum member",path)}
 	}
 	return checkConstraints(path,f,v)
 }
@@ -94,6 +95,7 @@ func checkField(path string,f Field,v any)error {
 func (s Schema) apply(raw object)(object,error){
 	out:=clone(raw).(object)
 	if s==nil{return out,nil}
+	if err:=s.ValidateDefinition();err!=nil{return nil,err}
 	for _,p:=range s.Paths(){
 		f:=s[p]
 		if err:=validateFieldDefinition(p,f);err!=nil{return nil,err}

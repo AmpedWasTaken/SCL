@@ -19,5 +19,17 @@ jobs:
       - run: go mod tidy
       - run: go test -race ./...
       - run: go vet ./...
+      - run: go test -run '^
+      - run: go build ./cmd/scl
+      - run: go run ./cmd/scl validate examples/appearance.conf
+ -bench BenchmarkParse -benchmem
+      - if: runner.os == 'Linux'
+        run: go test -run '^
+      - run: go build ./cmd/scl
+      - run: go run ./cmd/scl validate examples/appearance.conf
+ -fuzz '^FuzzParse
+      - run: go build ./cmd/scl
+      - run: go run ./cmd/scl validate examples/appearance.conf
+ -fuzztime 5s
       - run: go build ./cmd/scl
       - run: go run ./cmd/scl validate examples/appearance.conf
